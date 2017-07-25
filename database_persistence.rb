@@ -29,14 +29,6 @@ class DatabasePersistence
     end
   end
 
-  def list_todos(list_id)
-    sql = "SELECT * FROM todos WHERE list_id = $1"
-    result = query(sql, list_id)
-    result.map do |tuple|
-      {id: tuple['id'], name: tuple['name'], completed: tuple['completed'] == 't'}
-    end
-  end
-
   def create_new_list(list_name)
     sql = "INSERT INTO lists (name) VALUES ($1);"
     query(sql, list_name)
@@ -72,4 +64,14 @@ class DatabasePersistence
     query(sql, true, list_id)
   end
 
+  private
+
+  def list_todos(list_id)
+    sql = "SELECT * FROM todos WHERE list_id = $1"
+    result = query(sql, list_id)
+    result.map do |tuple|
+      {id: tuple['id'], name: tuple['name'], completed: tuple['completed'] == 't'}
+    end
+  end
+  
 end

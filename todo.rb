@@ -1,5 +1,4 @@
 require "sinatra"
-require "sinatra/reloader"
 require "sinatra/content_for"
 require "tilt/erubis"
 require "rb-readline"
@@ -12,7 +11,10 @@ configure do
   set :erb, :escape_html => true
 end
 
-
+configure(:development) do
+  require "sinatra/reloader"
+  also_reload "database_persistence.rb"
+end
 
 helpers do
   def list_complete?(list)
