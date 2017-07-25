@@ -72,7 +72,7 @@ def error_for_todo(name)
 end
 
 before do
-  @storage = DatabasePersistence.new
+  @storage = DatabasePersistence.new(logger)
 end
 
 get "/" do
@@ -175,7 +175,7 @@ post "/lists/:list_id/todos/:id/destroy" do
   todo_id = params[:id].to_i
   @list = load_list(@list_id)
 
-  @storage.delete_todo_from_list(@list_id, todo_id)
+  @storage.delete_todo_from_list(todo_id)
   
   if env["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest"
     status 204
@@ -192,7 +192,7 @@ post "/lists/:list_id/todos/:id" do
   todo_id = params[:id].to_i
   is_completed = params[:completed] == "true"
   
-  @storage.update_todo(@list_id, todo_id, is_completed)
+  @storage.update_todo(todo_id, is_completed)
 
   session[:success] = "The todo has been updated."
   redirect "/lists/#{@list_id}"

@@ -6,6 +6,6 @@ CREATE TABLE lists(
 CREATE TABLE todos(
   id serial PRIMARY KEY,
   name text NOT NULL,
-  list_id integer REFERENCES lists(id) NOT NULL,
-  completed boolean NOT NULL DEFAULT true
+  list_id integer REFERENCES lists(id) NOT NULL ON DELETE CASCADE,
+  completed boolean NOT NULL DEFAULT false
 );
