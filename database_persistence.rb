@@ -3,8 +3,16 @@ require "pg"
 class DatabasePersistence
   
   def initialize(logger)
-    @db = PG.connect(dbname: 'todo_lists')
+    @db = if Sinatra::Base.production?
+        PG.connect(ENV['DATABASE_URL'])
+      else
+        PG.connect(dbname: "todo_lists")
+      end
     @logger = logger
+  end
+
+  def disconnect
+    @db.close
   end
 
   def query(statement, *params)
@@ -73,5 +81,5 @@ class DatabasePersistence
       {id: tuple['id'], name: tuple['name'], completed: tuple['completed'] == 't'}
     end
   end
-  
+
 end
