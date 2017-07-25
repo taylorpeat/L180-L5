@@ -18,20 +18,20 @@ end
 
 helpers do
   def list_complete?(list)
-    todos_count(list) > 0 && todos_remaining_count(list) == 0
+    list[:todos_count] > 0 && list[:todos_remaining_count] == 0
   end
 
   def list_class(list)
     "complete" if list_complete?(list)
   end
 
-  def todos_count(list)
-    list[:todos].size
-  end
+  # def todos_count(list)
+  #   list[:todos].size
+  # end
 
-  def todos_remaining_count(list)
-    list[:todos].count { |todo| !todo[:completed] }
-  end
+  # def todos_remaining_count(list)
+  #   list[:todos].count { |todo| !todo[:completed] }
+  # end
 
   def sort_lists(lists, &block)
     complete_lists, incomplete_lists = lists.partition { |list| list_complete?(list) }
@@ -77,6 +77,10 @@ before do
   @storage = DatabasePersistence.new(logger)
 end
 
+after do
+  @storage.disconnect
+end
+
 get "/" do
   redirect "/lists"
 end
@@ -112,6 +116,7 @@ end
 get "/lists/:id" do
   @list_id = params[:id].to_i
   @list = load_list(@list_id)
+  @todos = @storage.list_todos(params[:id])
   erb :list, layout: :layout
 end
 
